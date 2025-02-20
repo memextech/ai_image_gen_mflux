@@ -5,8 +5,9 @@
 - Original repo: https://github.com/mflux/mflux (fetch this for latest API docs)
 - Architecture: Streamlit UI wrapping mflux-generate CLI
 
-## Initial Setup
-1. **Virtual Environment Setup**
+## Running the App From Scratch
+
+1. **Environment Setup**
    ```python
    # Create and activate virtual environment
    uv venv
@@ -17,18 +18,43 @@
    
    # Install mflux - this will also install the CLI tool
    uv pip install mflux~=0.5.1
-   
-   # Verify mflux-generate is available
-   mflux-generate --help
    ```
 
-   Note: Despite app.py containing dependency specs, explicit installation ensures CLI tools are properly installed in PATH
+2. **Verify Installation**
+   ```python
+   # Verify mflux-generate is available
+   mflux-generate --help
+   
+   # Should show available models and commands
+   ```
 
-2. **First Run Considerations**
-   - First model download is ~34GB
-   - Models are cached in ~/.cache/mflux/
-   - Ensure sufficient disk space
-   - Initial model load takes 3-5 minutes
+3. **Start the App**
+   ```python
+   # Run with auto-reload enabled
+   uv run -m streamlit run app.py
+   ```
+
+4. **First Run Process**
+   - Browser will open to http://localhost:8501
+   - Select model (start with "schnell" for faster testing)
+   - First generation will trigger model download (~34GB)
+   - Wait 3-5 minutes for initial model load
+   - Models are cached in ~/.cache/mflux/ for subsequent runs
+
+5. **Development Loop**
+   - Keep browser and terminal side by side
+   - Code changes trigger automatic UI updates
+   - Generated images appear in `generated_images/` directory
+   - Subsequent model loads are much faster
+
+6. **Testing the Setup**
+   ```python
+   # Basic test prompt
+   prompt = "a photo of a cat"
+   steps = 15  # Start with lower steps for faster generation
+   width = 512
+   height = 512
+   ```
 
 ## Core Components
 1. **Generation Interface**
@@ -49,19 +75,6 @@
    - dev: Higher quality, additional parameters:
      - guidance: Controls prompt adherence (1.0-10.0)
      - More steps recommended (15-25)
-
-## Development Loop
-1. **Local Development Setup**
-   ```python
-   # Run app with auto-reload
-   uv run -m streamlit run app.py
-   ```
-
-2. **Effective Iteration**
-   - Browser updates automatically on code changes
-   - Generated images saved to `generated_images/` with timestamp
-   - Keep browser and terminal side by side for quick feedback
-   - Subsequent model loads are faster (cached)
 
 ## mflux-specific Tasks
 
