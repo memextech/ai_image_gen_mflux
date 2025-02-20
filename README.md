@@ -15,7 +15,6 @@ This application wraps the mflux-generate CLI tool in a user-friendly web interf
 
 - [Streamlit](https://streamlit.io/) - Web interface framework
 - [mflux](https://github.com/mflux/mflux) - AI image generation backend
-- [Pillow](https://python-pillow.org/) - Image processing
 - [uv](https://github.com/astral-sh/uv) - Python package manager and virtual environment tool
 
 ## Quick Start
@@ -55,7 +54,7 @@ See [.memex/rules.md](.memex/rules.md) for detailed development guidelines inclu
 - Python 3.11+
 - ~40GB free disk space for models
 - 16GB+ RAM recommended
-- CUDA-capable GPU recommended (but not required)
+- Apple Silicon Mac or CUDA-capable GPU recommended (but not required)
 
 ## License
 
