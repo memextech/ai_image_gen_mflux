@@ -1,0 +1,13 @@
+# Virtual environment
+.venv/
+
+# Generated images
+generated_images/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS
+.DS_Store
