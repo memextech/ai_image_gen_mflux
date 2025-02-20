@@ -1,41 +1,62 @@
 # AI Image Generator UI
 
-A Streamlit-based user interface for generating AI images using mflux.
+A Streamlit-based user interface for the mflux AI image generator, providing an intuitive way to generate AI images using various models and parameters.
 
-## Features
+## Overview
 
-- Support for both schnell and dev models
-- Adjustable generation parameters:
-  - Model selection (schnell/dev)
-  - Quantization (None, 4-bit, 8-bit)
-  - Number of steps
-  - Guidance scale (for dev model)
-  - Seed control
-  - Resolution selection
-- Image download capability
-- Progress indicators
-- Error handling
+This application wraps the mflux-generate CLI tool in a user-friendly web interface, allowing users to:
+- Select different AI models (schnell/dev)
+- Configure generation parameters
+- Generate images from text prompts
+- Download generated images
+- Experiment with advanced parameters like negative prompts and sampling methods
 
-## Requirements
+## Technology Stack
 
-- [uv](https://github.com/astral-sh/uv) - Fast Python package installer and resolver
-- Python 3.11+
+- [Streamlit](https://streamlit.io/) - Web interface framework
+- [mflux](https://github.com/mflux/mflux) - AI image generation backend
+- [Pillow](https://python-pillow.org/) - Image processing
+- [uv](https://github.com/astral-sh/uv) - Python package manager and virtual environment tool
 
-## Installation & Running
+## Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/ai_image_generator_ui_mflux.git
-cd ai_image_generator_ui_mflux
+# Create and activate virtual environment
+uv venv
+source .venv/bin/activate
 
-# Run the app (uv will handle dependencies automatically)
+# Install dependencies
+uv pip install streamlit~=1.42.0 pillow~=10.4.0 mflux~=0.5.1
+
+# Start the app
 uv run -m streamlit run app.py
 ```
 
-The app will be available at http://localhost:8501
+Visit http://localhost:8501 in your browser.
 
-## Notes
+## First Run Notes
 
-- First run will download model weights (~34GB for each model)
-- Higher resolution and more steps will result in longer generation times
-- Generated images are saved in the `generated_images` directory
+- First model download is ~34GB
+- Initial model load takes 3-5 minutes
+- Models are cached in ~/.cache/mflux/
+- Start with "schnell" model for faster testing
+
+## Development
+
+See [.memex/rules.md](.memex/rules.md) for detailed development guidelines including:
+- Complete setup instructions
+- Model-specific parameters
+- Error handling
+- Potential improvements
+- Development workflow
+
+## Requirements
+
+- Python 3.11+
+- ~40GB free disk space for models
+- 16GB+ RAM recommended
+- CUDA-capable GPU recommended (but not required)
+
+## License
+
+Private repository. All rights reserved.
