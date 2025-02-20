@@ -23,20 +23,20 @@ st.title("AI Image Generator")
 # Sidebar controls
 with st.sidebar:
     st.header("Generation Settings")
-    
+
     model_name = st.selectbox(
         "Select Model",
         ["schnell", "dev"],
         help="schnell is faster but dev might produce better quality images"
     )
-    
+
     quantize = st.selectbox(
         "Quantization",
         [None, 4, 8],
         format_func=lambda x: "None" if x is None else f"{x}-bit",
         help="Lower bits = faster generation but might affect quality"
     )
-    
+
     steps = st.slider(
         "Steps",
         min_value=2,
@@ -44,7 +44,7 @@ with st.sidebar:
         value=4 if model_name == "schnell" else 20,
         help="More steps = better quality but slower generation"
     )
-    
+
     if model_name == "dev":
         guidance = st.slider(
             "Guidance Scale",
@@ -54,7 +54,7 @@ with st.sidebar:
             step=0.5,
             help="Higher values = stronger adherence to prompt"
         )
-    
+
     seed = st.number_input(
         "Seed",
         min_value=0,
@@ -62,11 +62,11 @@ with st.sidebar:
         value=42,
         help="Same seed + same settings = same image"
     )
-    
+
     resolution = st.select_slider(
         "Resolution",
         options=[512, 768, 1024],
-        value=1024,
+        value=512,
         help="Higher resolution = better quality but slower generation"
     )
 
@@ -83,45 +83,45 @@ if st.button("Generate Image", type="primary"):
     else:
         try:
             # Prepare command
-            cmd = ["mflux-generate", 
+            cmd = ["mflux-generate",
                   "--model", model_name,
                   "--prompt", prompt,
                   "--seed", str(seed),
                   "--steps", str(steps),
                   "--height", str(resolution),
                   "--width", str(resolution)]
-            
+
             # Add quantization if selected
             if quantize is not None:
                 cmd.extend(["--quantize", str(quantize)])
-            
+
             # Add guidance for dev model
             if model_name == "dev":
                 cmd.extend(["--guidance", str(guidance)])
-            
+
             # Set output path
             output_dir = "generated_images"
             os.makedirs(output_dir, exist_ok=True)
             timestamp = time.strftime("%Y%m%d-%H%M%S")
             filename = f"{output_dir}/image_{timestamp}.png"
             cmd.extend(["--output", filename])
-            
+
             # Generate image
             with st.spinner("Generating image..."):
                 start_time = time.time()
                 result = subprocess.run(cmd, capture_output=True, text=True)
                 generation_time = time.time() - start_time
-                
+
                 if result.returncode != 0:
                     raise Exception(f"Command failed: {result.stderr}")
-            
+
             # Display results
             st.success(f"Image generated in {generation_time:.2f} seconds!")
-            
+
             # Display image
             image = Image.open(filename)
             st.image(image, caption=prompt, use_column_width=True)
-            
+
             # Download button
             with open(filename, "rb") as file:
                 st.download_button(
@@ -130,7 +130,7 @@ if st.button("Generate Image", type="primary"):
                     file_name=f"ai_generated_{timestamp}.png",
                     mime="image/png"
                 )
-                
+
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
