@@ -1,8 +1,16 @@
+# /// script
+# dependencies = [
+#   "streamlit~=1.42.0",
+#   "pillow~=10.4.0",
+#   "mflux~=0.5.1"
+# ]
+# ///
+
 import streamlit as st
-from mflux import Flux1, Config
-from PIL import Image
+import subprocess
 import os
 import time
+from PIL import Image
 
 st.set_page_config(
     page_title="AI Image Generator",
@@ -74,44 +82,44 @@ if st.button("Generate Image", type="primary"):
         st.error("Please enter a prompt first!")
     else:
         try:
-            with st.spinner("Loading model..."):
-                # Initialize model
-                flux = Flux1.from_name(
-                    model_name=model_name,
-                    quantize=quantize
-                )
+            # Prepare command
+            cmd = ["mflux-generate", 
+                  "--model", model_name,
+                  "--prompt", prompt,
+                  "--seed", str(seed),
+                  "--steps", str(steps),
+                  "--height", str(resolution),
+                  "--width", str(resolution)]
             
-            # Configure generation parameters
-            config = Config(
-                num_inference_steps=steps,
-                height=resolution,
-                width=resolution,
-            )
+            # Add quantization if selected
+            if quantize is not None:
+                cmd.extend(["--quantize", str(quantize)])
             
+            # Add guidance for dev model
             if model_name == "dev":
-                config.guidance_scale = guidance
+                cmd.extend(["--guidance", str(guidance)])
             
-            # Generate image
-            with st.spinner("Generating image..."):
-                start_time = time.time()
-                image = flux.generate_image(
-                    seed=seed,
-                    prompt=prompt,
-                    config=config
-                )
-                generation_time = time.time() - start_time
-            
-            # Display results
-            st.success(f"Image generated in {generation_time:.2f} seconds!")
-            
-            # Save image
+            # Set output path
             output_dir = "generated_images"
             os.makedirs(output_dir, exist_ok=True)
             timestamp = time.strftime("%Y%m%d-%H%M%S")
             filename = f"{output_dir}/image_{timestamp}.png"
-            image.save(filename)
+            cmd.extend(["--output", filename])
+            
+            # Generate image
+            with st.spinner("Generating image..."):
+                start_time = time.time()
+                result = subprocess.run(cmd, capture_output=True, text=True)
+                generation_time = time.time() - start_time
+                
+                if result.returncode != 0:
+                    raise Exception(f"Command failed: {result.stderr}")
+            
+            # Display results
+            st.success(f"Image generated in {generation_time:.2f} seconds!")
             
             # Display image
+            image = Image.open(filename)
             st.image(image, caption=prompt, use_column_width=True)
             
             # Download button
@@ -125,3 +133,11 @@ if st.button("Generate Image", type="primary"):
                 
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "--help":
+        print("AI Image Generator UI")
+        print("Usage: uv run app.py")
+        print("This will start a Streamlit server with the UI")
+        sys.exit(0)
