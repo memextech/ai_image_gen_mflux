@@ -5,6 +5,31 @@
 - Original repo: https://github.com/mflux/mflux (fetch this for latest API docs)
 - Architecture: Streamlit UI wrapping mflux-generate CLI
 
+## Initial Setup
+1. **Virtual Environment Setup**
+   ```python
+   # Create and activate virtual environment
+   uv venv
+   source .venv/bin/activate
+
+   # Install core dependencies
+   uv pip install streamlit~=1.42.0 pillow~=10.4.0
+   
+   # Install mflux - this will also install the CLI tool
+   uv pip install mflux~=0.5.1
+   
+   # Verify mflux-generate is available
+   mflux-generate --help
+   ```
+
+   Note: Despite app.py containing dependency specs, explicit installation ensures CLI tools are properly installed in PATH
+
+2. **First Run Considerations**
+   - First model download is ~34GB
+   - Models are cached in ~/.cache/mflux/
+   - Ensure sufficient disk space
+   - Initial model load takes 3-5 minutes
+
 ## Core Components
 1. **Generation Interface**
    - Uses mflux-generate CLI (not Python API)
@@ -36,7 +61,7 @@
    - Browser updates automatically on code changes
    - Generated images saved to `generated_images/` with timestamp
    - Keep browser and terminal side by side for quick feedback
-   - First model load takes time (~34GB), subsequent runs are faster
+   - Subsequent model loads are faster (cached)
 
 ## mflux-specific Tasks
 
@@ -108,3 +133,8 @@ Specific to mflux-generate:
    if "CUDA out of memory" in result.stderr:
        st.error("Memory limit reached. Try reducing resolution or batch size.")
    ```
+
+3. Common mflux-specific errors:
+   - "Model not found": Check ~/.cache/mflux/ permissions
+   - "CUDA initialization failed": Verify GPU availability
+   - "Invalid sampler": Check mflux-generate --help for valid options
