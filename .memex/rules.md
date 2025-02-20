@@ -1,107 +1,110 @@
-# AI Image Generator UI - Development Guide
+# AI Image Generator UI - Agent Guide
 
-## Overview
-This project provides a Streamlit UI for mflux's image generation capabilities. The architecture is simple:
-- Single `app.py` file containing UI and generation logic
-- Uses mflux-generate CLI for image generation
-- Streamlit for web interface
-- uv for dependency management
+## Project Context
+- Base project: mflux AI image generator with Streamlit UI
+- Original repo: https://github.com/mflux/mflux (fetch this for latest API docs)
+- Architecture: Streamlit UI wrapping mflux-generate CLI
 
-## Key Components
-1. **UI Layer** (Streamlit)
-   - Handles parameter input
-   - Displays generated images
-   - Manages download functionality
+## Core Components
+1. **Generation Interface**
+   - Uses mflux-generate CLI (not Python API)
+   - Command structure:
+     ```python
+     cmd = ["mflux-generate",
+            "--model", model_name,      # "schnell" or "dev"
+            "--prompt", prompt,         # text prompt
+            "--seed", str(seed),        # reproducibility
+            "--steps", str(steps),      # quality vs speed
+            "--height", str(height),    # image dimensions
+            "--width", str(width)]
+     ```
 
-2. **Generation Layer** (mflux-generate)
-   - Executes image generation via CLI
-   - Handles model loading and inference
-   - Manages output file creation
+2. **Model-Specific Parameters**
+   - schnell: Faster generation, fewer parameters
+   - dev: Higher quality, additional parameters:
+     - guidance: Controls prompt adherence (1.0-10.0)
+     - More steps recommended (15-25)
 
-## Development Workflow
-
-### Setting Up Development Environment
-```bash
-git clone <repository>
-cd ai_image_generator_ui_mflux
-uv run -m streamlit run app.py
-```
-
-### Making Changes
-1. **UI Modifications**
-   - All UI elements are in `app.py`
-   - Streamlit components are organized by sidebar/main area
-   - Changes auto-reload in browser
-
-2. **Adding Features**
-   - New generation parameters: Add to sidebar section
-   - New output options: Add to generation result section
-   - New CLI options: Add to cmd list in generate section
-
-3. **Testing Changes**
-   - Run app locally: `uv run -m streamlit run app.py`
-   - Test different parameter combinations
-   - Verify image generation and download
-
-### Best Practices
-1. **Code Organization**
-   - Keep UI logic separate from generation logic
-   - Use clear variable names for parameters
-   - Add comments for complex parameter interactions
-
-2. **Error Handling**
-   - Always wrap mflux-generate calls in try/except
-   - Provide clear error messages to users
-   - Log errors for debugging
-
-3. **Performance**
-   - Use appropriate default values for parameters
-   - Consider adding caching for repeated operations
-   - Monitor memory usage with large models
-
-### Common Tasks
-1. **Adding a New Parameter**
+## Development Loop
+1. **Local Development Setup**
    ```python
-   new_param = st.sidebar.slider(
-       "Parameter Name",
-       min_value=0,
-       max_value=100,
-       value=50,
-       help="Parameter description"
-   )
-   cmd.extend(["--new-param", str(new_param)])
+   # Run app with auto-reload
+   uv run -m streamlit run app.py
    ```
 
-2. **Adding Output Options**
+2. **Effective Iteration**
+   - Browser updates automatically on code changes
+   - Generated images saved to `generated_images/` with timestamp
+   - Keep browser and terminal side by side for quick feedback
+   - First model load takes time (~34GB), subsequent runs are faster
+
+## mflux-specific Tasks
+
+1. **Custom Model Loading**
    ```python
-   if st.checkbox("Show additional info"):
-       st.write("Additional generation details...")
+   # Add to cmd list before generation
+   cmd.extend(["--model-path", "/path/to/custom/model"])
    ```
 
-3. **Modifying Generation Settings**
+2. **Advanced Generation Control**
    ```python
-   # Add to cmd list in generate section
-   if special_option:
-       cmd.extend(["--special-option", "value"])
+   # Negative prompts (things to avoid in generation)
+   cmd.extend(["--negative-prompt", "bad quality, blurry"])
+   
+   # Control over inference
+   cmd.extend(["--sampler", "euler_a"])  # Different sampling methods
+   cmd.extend(["--cfg-scale", "7.5"])    # Classifier free guidance
    ```
 
-### Deployment
-1. **Local Development**
-   - Use `uv run -m streamlit run app.py`
-   - Access at http://localhost:8501
+3. **Batch Generation**
+   ```python
+   # Generate variations with same prompt
+   cmd.extend(["--n-samples", "4"])
+   ```
 
-2. **Production**
-   - Consider using Streamlit Cloud
-   - Or deploy with Docker (add Dockerfile)
-   - Ensure model weights are properly cached
+## Potential Improvements
 
-### Troubleshooting
-1. **Common Issues**
-   - Model download failures: Check network/disk space
-   - Memory errors: Reduce batch size/resolution
-   - UI not updating: Check Streamlit cache
+1. **Generation Features**
+   - Image-to-image generation support
+   - Inpainting/outpainting capabilities
+   - Prompt templates/presets
+   - Style transfer options
+   - Face enhancement integration
 
-2. **Debug Tools**
-   - Use st.write() for debugging
-   - Check streamlit logs
-   - Monitor system resources
+2. **UI Enhancements**
+   - Gallery view of generated images
+   - Generation history
+   - Prompt history/favorites
+   - Parameter presets
+   - Batch generation interface
+
+3. **Performance Optimizations**
+   - Model caching
+   - Progressive image preview
+   - Queue system for batch jobs
+   - Memory-efficient batch processing
+
+4. **Advanced Features**
+   - Prompt engineering assistance
+   - Style mixing
+   - Animation generation
+   - Upscaling integration
+   - Automatic face correction
+
+## Error Handling
+Specific to mflux-generate:
+1. Model loading failures:
+   ```python
+   try:
+       result = subprocess.run(cmd, capture_output=True, text=True)
+       if "Error loading model" in result.stderr:
+           st.error("Model failed to load. Check disk space and permissions.")
+   except Exception as e:
+       st.error(f"Generation failed: {str(e)}")
+   ```
+
+2. CUDA/Memory issues:
+   ```python
+   if "CUDA out of memory" in result.stderr:
+       st.error("Memory limit reached. Try reducing resolution or batch size.")
+   ```
