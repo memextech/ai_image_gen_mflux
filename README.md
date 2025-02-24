@@ -1,6 +1,6 @@
-# AI Image Generator UI
+# Local AI Image Gen Template
 
-A Streamlit-based user interface for the mflux AI image generator, providing an intuitive way to generate AI images using various models and parameters.
+This templates develops and spins up a Streamlit-based user interface for the mflux AI image generator, providing an intuitive way to generate AI images using various models and parameters.
 
 ## Overview
 
@@ -11,6 +11,22 @@ This application wraps the mflux-generate CLI tool in a user-friendly web interf
 - Download generated images
 - Experiment with advanced parameters like negative prompts and sampling methods
 
+## Potential app functionality expansions to explore
+
+Here are some ideas of how to expand this template after you get it up and running:
+- Allow user to select the number of images the generator should create
+- Add a dropdown with potential image styles
+- Add a share button for direct social media sharing
+
+## Requirements
+
+- macOS 11.0 or later
+- Apple Silicon Mac (M1/M2/M3)
+- Python 3.11+
+- ~40GB free disk space for models
+- 16GB+ RAM recommended
+- CUDA-capable GPU recommended (but not required)
+
 ## Technology Stack
 
 - [Streamlit](https://streamlit.io/) - Web interface framework
@@ -19,6 +35,10 @@ This application wraps the mflux-generate CLI tool in a user-friendly web interf
 - [uv](https://github.com/astral-sh/uv) - Python package manager and virtual environment tool
 
 ## Quick Start
+
+Just ask Memex to run this app locally and it will take care of the rest! If you run into any errors, just point Memex to fix them.
+
+If you’d like to set up the environment and dependencies manually, follow these steps:
 
 ```bash
 # Create and activate virtual environment
@@ -43,40 +63,15 @@ Visit http://localhost:8501 in your browser.
 
 ## Development
 
-See [.memex/rules.md](.memex/rules.md) for detailed development guidelines including:
+See Rules for AI (rendered from .memex/rules.md) for detailed development guidelines Memex will follow, including:
 - Complete setup instructions
 - Model-specific parameters
 - Error handling
 - Potential improvements
 - Development workflow
 
-## Requirements
-
-- Python 3.11+
-- ~40GB free disk space for models
-- 16GB+ RAM recommended
-- CUDA-capable GPU recommended (but not required)
+You can ask Memex to update rules.md to reflect your project needs as you expand it, or set it as part of your Custom Instructions so that it does it automatically after important steps.
 
 ## License
 
-MIT License
-
-Copyright (c) 2025 Atlas Futures Inc
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - See LICENSE file for details
