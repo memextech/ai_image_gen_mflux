@@ -58,12 +58,12 @@ Visit http://localhost:8501 in your browser.
 
 - First model download is ~34GB
 - Initial model load takes 3-5 minutes
-- Models are cached in ~/.cache/mflux/
+- Models are cached in `~/.cache/mflux/`
 - Start with "schnell" model for faster testing
 
 ## Development
 
-See Rules for AI (rendered from .memex/rules.md) for detailed development guidelines Memex will follow, including:
+See Rules for AI (rendered from `.memex/rules.md`) for detailed development guidelines Memex will follow, including:
 - Complete setup instructions
 - Model-specific parameters
 - Error handling
